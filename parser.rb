@@ -8,7 +8,6 @@ ARCHIVE_YEARS = [1996]
 ARCHIVE_MONTHS = ["01"] #%w(01 02 03 04 05 06 07 08 09 10 11 12)
 ARCHIVE_PARTS = [0] #0..3
 PUNCTUATION = /[.,?;:!()\[\]]/
-SKIP_WORDS = []
 
 def get_archive_url(year, month, part)
   return "https://spiderbites.nytimes.com/#{year}/articles_#{year}_#{month}_0000#{part}.html"
@@ -61,7 +60,6 @@ ARCHIVE_YEARS.each do |year|
     path = [path,headline].join("/")
     typos = []        
     tokens.keys.each do |word|
-      next if SKIP_WORDS.include?(word)
       next if /--/ =~ word #dashes
       next if /\d+/ =~ word #numbers, years
       next if /^[A-Z]/ =~ word #proper nouns
@@ -76,14 +74,11 @@ ARCHIVE_YEARS.each do |year|
       $stderr.puts("Writing #{path}")
       File.open(path, 'w') do |file|
         typos.each do |t|
-          next if SKIP_WORDS.include?(t[0])
           print t
-          print "\nWrite typo? [y/n/s] "
+          print "\nWrite typo? [y/n] "
           answer = gets.chomp
           if answer == "y"
             file.write(t.join("\t") + "\n")
-          elsif answer == "s"
-            SKIP_WORDS << t[0]
           end
         end
       end
