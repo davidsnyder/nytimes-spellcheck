@@ -47,7 +47,7 @@ ARCHIVE_YEARS.each do |year|
         else
           toks = [w]
         end
-        toks.map{|t| t.delete_prefix('"').delete_prefix("'").delete_suffix("'").delete_suffix('"').gsub(PUNCTUATION,'') }
+        toks.map{|t| t.gsub(PUNCTUATION,'').delete_prefix('"').delete_prefix("'").delete_suffix("'").delete_suffix('"') }
       end
       stripped.flatten.each do |w|
         tokens[w] = index
